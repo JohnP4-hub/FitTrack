@@ -1,0 +1,9 @@
+flowchart LR
+    C[Postman / Future Frontend] -->|HTTP JSON| API[NestJS REST API]
+    API --> G[JWT Auth Guard]
+    G --> CT[Controllers]
+    CT --> SV[Services]
+    SV --> REPO[TypeORM Repositories]
+    REPO --> DB[(MySQL)]
+    SV --> CT
+    CT --> C

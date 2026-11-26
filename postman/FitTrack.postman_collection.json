@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "FitTrack REST API",
+    "description": "Postman collection for the FitTrack NestJS backend. Run Register, Login, then the CRUD folders in order.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api" },
+    { "key": "accessToken", "value": "" },
+    { "key": "memberId", "value": "" },
+    { "key": "trainerId", "value": "" },
+    { "key": "planId", "value": "" },
+    { "key": "scheduleId", "value": "" },
+    { "key": "progressId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register member account",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Demo\",\n  \"lastName\": \"Member\",\n  \"email\": \"demo@example.com\",\n  \"password\": \"Password123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{ "listen": "test", "script": { "exec": ["const json = pm.response.json();", "pm.collectionVariables.set('accessToken', json.accessToken);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"demo@example.com\",\n  \"password\": \"Password123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Current user profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Members CRUD",
+      "item": [
+        {
+          "name": "Create member",
+          "event": [{ "listen": "test", "script": { "exec": ["const json = pm.response.json();", "pm.collectionVariables.set('memberId', json.id);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Ana\",\n  \"lastName\": \"Santos\",\n  \"email\": \"ana.santos@example.com\",\n  \"phone\": \"09171234567\",\n  \"gender\": \"female\",\n  \"membershipStart\": \"2026-11-01\",\n  \"status\": \"active\"\n}" },
+            "url": { "raw": "{{baseUrl}}/members", "host": ["{{baseUrl}}"], "path": ["members"] }
+          }
+        },
+        { "name": "List members", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/members", "host": ["{{baseUrl}}"], "path": ["members"] } } },
+        { "name": "Get member", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/members/{{memberId}}", "host": ["{{baseUrl}}"], "path": ["members", "{{memberId}}"] } } },
+        { "name": "Update member", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"phone\": \"09179876543\",\n  \"status\": \"active\"\n}" }, "url": { "raw": "{{baseUrl}}/members/{{memberId}}", "host": ["{{baseUrl}}"], "path": ["members", "{{memberId}}"] } } }
+      ]
+    },
+    {
+      "name": "Trainers CRUD",
+      "item": [
+        {
+          "name": "Create trainer",
+          "event": [{ "listen": "test", "script": { "exec": ["const json = pm.response.json();", "pm.collectionVariables.set('trainerId', json.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Marco\",\n  \"lastName\": \"Reyes\",\n  \"email\": \"marco.reyes@example.com\",\n  \"specialization\": \"Strength and conditioning\",\n  \"bio\": \"Certified strength coach\"\n}" }, "url": { "raw": "{{baseUrl}}/trainers", "host": ["{{baseUrl}}"], "path": ["trainers"] } }
+        },
+        { "name": "List trainers", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/trainers", "host": ["{{baseUrl}}"], "path": ["trainers"] } } },
+        { "name": "Get trainer", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/trainers/{{trainerId}}", "host": ["{{baseUrl}}"], "path": ["trainers", "{{trainerId}}"] } } },
+        { "name": "Update trainer", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"bio\": \"Certified coach with a focus on sustainable strength\"\n}" }, "url": { "raw": "{{baseUrl}}/trainers/{{trainerId}}", "host": ["{{baseUrl}}"], "path": ["trainers", "{{trainerId}}"] } } }
+      ]
+    },
+    {
+      "name": "Workout Plans CRUD",
+      "item": [
+        {
+          "name": "Create workout plan",
+          "event": [{ "listen": "test", "script": { "exec": ["const json = pm.response.json();", "pm.collectionVariables.set('planId', json.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"memberId\": {{memberId}},\n  \"trainerId\": {{trainerId}},\n  \"title\": \"Beginner Strength Foundation\",\n  \"goal\": \"Build strength\",\n  \"description\": \"Three full-body sessions every week\",\n  \"level\": \"beginner\",\n  \"startDate\": \"2026-11-26\",\n  \"status\": \"active\"\n}" }, "url": { "raw": "{{baseUrl}}/workout-plans", "host": ["{{baseUrl}}"], "path": ["workout-plans"] } }
+        },
+        { "name": "List workout plans", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/workout-plans", "host": ["{{baseUrl}}"], "path": ["workout-plans"] } } },
+        { "name": "Get workout plan", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/workout-plans/{{planId}}", "host": ["{{baseUrl}}"], "path": ["workout-plans", "{{planId}}"] } } },
+        { "name": "Update workout plan", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"completed\"\n}" }, "url": { "raw": "{{baseUrl}}/workout-plans/{{planId}}", "host": ["{{baseUrl}}"], "path": ["workout-plans", "{{planId}}"] } } }
+      ]
+    },
+    {
+      "name": "Schedules CRUD",
+      "item": [
+        {
+          "name": "Create schedule",
+          "event": [{ "listen": "test", "script": { "exec": ["const json = pm.response.json();", "pm.collectionVariables.set('scheduleId', json.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"memberId\": {{memberId}},\n  \"trainerId\": {{trainerId}},\n  \"workoutPlanId\": {{planId}},\n  \"scheduledAt\": \"2026-12-01T09:00:00.000Z\",\n  \"durationMinutes\": 60,\n  \"sessionType\": \"Strength training\",\n  \"notes\": \"Bring water and a towel\"\n}" }, "url": { "raw": "{{baseUrl}}/schedules", "host": ["{{baseUrl}}"], "path": ["schedules"] } }
+        },
+        { "name": "List schedules", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/schedules", "host": ["{{baseUrl}}"], "path": ["schedules"] } } },
+        { "name": "Get schedule", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/schedules/{{scheduleId}}", "host": ["{{baseUrl}}"], "path": ["schedules", "{{scheduleId}}"] } } },
+        { "name": "Update schedule", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"completed\"\n}" }, "url": { "raw": "{{baseUrl}}/schedules/{{scheduleId}}", "host": ["{{baseUrl}}"], "path": ["schedules", "{{scheduleId}}"] } } }
+      ]
+    },
+    {
+      "name": "Progress CRUD",
+      "item": [
+        {
+          "name": "Create progress record",
+          "event": [{ "listen": "test", "script": { "exec": ["const json = pm.response.json();", "pm.collectionVariables.set('progressId', json.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"memberId\": {{memberId}},\n  \"recordedAt\": \"2026-11-26\",\n  \"weightKg\": 72.5,\n  \"bodyFatPercent\": 18.4,\n  \"muscleMassKg\": 33.1,\n  \"notes\": \"Monthly assessment\"\n}" }, "url": { "raw": "{{baseUrl}}/progress", "host": ["{{baseUrl}}"], "path": ["progress"] } }
+        },
+        { "name": "List progress records", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/progress", "host": ["{{baseUrl}}"], "path": ["progress"] } } },
+        { "name": "Get progress record", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/progress/{{progressId}}", "host": ["{{baseUrl}}"], "path": ["progress", "{{progressId}}"] } } },
+        { "name": "Update progress record", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"weightKg\": 71.8,\n  \"notes\": \"Updated after follow-up measurement\"\n}" }, "url": { "raw": "{{baseUrl}}/progress/{{progressId}}", "host": ["{{baseUrl}}"], "path": ["progress", "{{progressId}}"] } } }
+      ]
+    },
+    {
+      "name": "Cleanup deletes",
+      "item": [
+        { "name": "Delete progress record", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/progress/{{progressId}}", "host": ["{{baseUrl}}"], "path": ["progress", "{{progressId}}"] } } },
+        { "name": "Delete schedule", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/schedules/{{scheduleId}}", "host": ["{{baseUrl}}"], "path": ["schedules", "{{scheduleId}}"] } } },
+        { "name": "Delete workout plan", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/workout-plans/{{planId}}", "host": ["{{baseUrl}}"], "path": ["workout-plans", "{{planId}}"] } } },
+        { "name": "Delete trainer", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/trainers/{{trainerId}}", "host": ["{{baseUrl}}"], "path": ["trainers", "{{trainerId}}"] } } },
+        { "name": "Delete member", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": { "raw": "{{baseUrl}}/members/{{memberId}}", "host": ["{{baseUrl}}"], "path": ["members", "{{memberId}}"] } } }
+      ]
+    },
+    {
+      "name": "Security check",
+      "item": [
+        { "name": "Protected route without token (expect 401)", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/members", "host": ["{{baseUrl}}"], "path": ["members"] } } }
+      ]
+    }
+  ]
+}

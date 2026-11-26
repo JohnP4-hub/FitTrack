@@ -1,0 +1,15 @@
+erDiagram
+    USERS ||--o| MEMBERS : "has profile"
+    MEMBERS ||--o{ WORKOUT_PLANS : owns
+    TRAINERS ||--o{ WORKOUT_PLANS : creates
+    MEMBERS ||--o{ SCHEDULES : books
+    TRAINERS ||--o{ SCHEDULES : leads
+    WORKOUT_PLANS ||--o{ SCHEDULES : contains
+    MEMBERS ||--o{ PROGRESS_RECORDS : records
+
+    USERS { int id PK; varchar email UK; varchar password_hash; enum role }
+    MEMBERS { int id PK; int user_id FK; varchar email UK; enum status }
+    TRAINERS { int id PK; varchar email UK; varchar specialization; enum status }
+    WORKOUT_PLANS { int id PK; int member_id FK; int trainer_id FK; varchar title; enum status }
+    SCHEDULES { int id PK; int member_id FK; int trainer_id FK; int workout_plan_id FK; datetime scheduled_at }
+    PROGRESS_RECORDS { int id PK; int member_id FK; date recorded_at; decimal weight_kg }
